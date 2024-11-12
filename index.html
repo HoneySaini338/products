@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Services Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #00ff9d;
+            --background-color: #000000;
+            --card-background: #121212;
+            --text-color: #ffffff;
+            --shadow-color: rgba(0, 255, 157, 0.1);
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-size: clamp(24px, 5vw, 36px);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 15px;
+        }
+
+        .service-card {
+            background: var(--card-background);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+
+        .service-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        .service-button {
+            background: var(--primary-color);
+            color: var(--background-color);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .service-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .order-form {
+            display: none;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: var(--background-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px var(--shadow-color);
+            z-index: 1000;
+            border: 1px solid var(--primary-color);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .service-card {
+                padding: 20px;
+            }
+
+            .order-form {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            input, select {
+                padding: 10px;
+            }
+        }
+
+        .payment-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px var(--shadow-color);
+            z-index: 1001;
+            border: 1px solid var(--primary-color);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-options button {
+            background: var(--primary-color);
+            color: var(--background-color);
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-options button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        #customDetails {
+            width: 100%;
+            background: var(--background-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            padding: 12px;
+            resize: vertical;
+        }
+
+        .price-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--card-background);
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .payment-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px var(--shadow-color);
+            z-index: 1001;
+            border: 1px solid var(--primary-color);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+
+        .qr-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .qr-container img {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+
+        .verification-form {
+            margin-top: 20px;
+        }
+
+        #transactionId {
+            font-size: 18px;
+            letter-spacing: 4px;
+            text-align: center;
+            width: 120px;
+            margin: 10px auto;
+        }
+
+        .payment-details {
+            margin-top: 15px;
+            text-align: left;
+            padding: 10px;
+            background: var(--card-background);
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .payment-details p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .payment-details strong {
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        .qr-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .qr-container img {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .success-popup ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 10px 0;
+            color: var(--text-color);
+        }
+
+        .success-popup ul li {
+            margin: 5px 0;
+        }
+
+        .success-popup button {
+            margin: 5px;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        #transactionId {
+            text-align: center;
+            letter-spacing: 4px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Digital Services Portfolio</h1>
+    
+    <div class="services-grid">
+        <div class="service-card">
+            <h2>Wedding Invitation</h2>
+            <p>Custom wedding invitation webpages and videos</p>
+            <p>Webpage: ₹300 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Wedding Invitation')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Birthday Wishes</h2>
+            <p>Personalized birthday wish webpages and videos</p>
+            <p>Webpage: ₹300 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Birthday Wishes')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Festival Wishes</h2>
+            <p>Festival celebration webpages and videos</p>
+            <p>Webpage: ₹300 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Festival Wishes')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Custom Webpage</h2>
+            <p>Fully customized webpage based on your requirements</p>
+            <p>Starting from ₹500</p>
+            <button class="service-button" onclick="showOrderForm('Custom Webpage')">Order Now</button>
+        </div>
+    </div>
+
+    <div id="orderForm" class="order-form">
+        <h2>Order Details</h2>
+        <form id="customerForm">
+            <input type="hidden" id="serviceType" name="serviceType">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email: (Optional)</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp Number:</label>
+                <input type="tel" id="whatsapp" name="whatsapp" required>
+            </div>
+            <div class="form-group">
+                <label for="productType">Product Type:</label>
+                <select id="productType" name="productType" required onchange="updatePrice()">
+                    <option value="webpage">Webpage (₹300)</option>
+                    <option value="video">Video (₹200)</option>
+                    <option value="custom">Custom Webpage (₹500)</option>
+                </select>
+            </div>
+            <div class="form-group" id="customRequirementsGroup" style="display: none;">
+                <label for="customDetails">Custom Webpage Details:</label>
+                <textarea id="customDetails" name="customDetails" rows="4" 
+                    placeholder="Please describe your requirements in detail..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="deliveryMethod">Delivery Method:</label>
+                <select id="deliveryMethod" name="deliveryMethod" required>
+                    <option value="whatsapp">WhatsApp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="requirements">Special Requirements:</label>
+                <input type="text" id="requirements" name="requirements">
+            </div>
+            <div class="price-summary">
+                <p>Total Amount: ₹<span id="totalPrice">300</span></p>
+            </div>
+            <button type="submit" class="service-button">Confirm Order</button>
+        </form>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="success-popup" id="successPopup">
+        <h2>Order Successful! 🎉</h2>
+        <p>Your order has been confirmed and is being processed.</p>
+        <p>You will receive further details via email and WhatsApp.</p>
+        <p>Order ID: ${currentOrderId}</p>
+        <button class="service-button" onclick="closeSuccessPopup()">Close</button>
+    </div>
+
+    <div class="payment-popup" id="paymentPopup">
+        <h2>Complete Payment</h2>
+        <div class="qr-container">
+            <img id="upiQR" alt="UPI QR Code">
+            <div class="payment-details">
+                <p><strong>UPI ID:</strong> hs112404-1@oksbi</p>
+                <p><strong>Amount:</strong> ₹<span id="paymentAmount">0</span></p>
+            </div>
+        </div>
+        <div class="verification-form">
+            <div class="form-group">
+                <label for="transactionId">Enter last 4 digits of UPI Transaction ID:</label>
+                <input type="text" id="transactionId" maxlength="4" pattern="\d{4}" required>
+                <p class="help-text">Please check your UPI payment confirmation message for the Transaction ID</p>
+            </div>
+            <button class="service-button" onclick="verifyTransaction()">Verify Payment</button>
+        </div>
+    </div>
+
+    <script>
+        function showOrderForm(serviceType) {
+            const orderForm = document.getElementById('orderForm');
+            document.getElementById('serviceType').value = serviceType;
+            orderForm.style.display = 'block';
+            orderForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        let currentOrderId = null;
+        let currentPaymentAmount = null;
+        let correctTransactionId = null;
+
+        document.getElementById('customerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const productType = formData.get('productType');
+            currentPaymentAmount = getAmountFromProductType(productType);
+            currentOrderId = 'ORD' + Date.now();
+            
+            // Set the correct transaction ID as last 4 digits of order ID
+            correctTransactionId = currentOrderId.slice(-4);
+            
+            // Show payment popup
+            handlePayment({
+                orderId: currentOrderId,
+                amount: currentPaymentAmount
+            });
+        });
+
+        // Add this helper function to get amount based on product type
+        function getAmountFromProductType(productType) {
+            switch(productType) {
+                case 'video':
+                    return 200;
+                case 'custom':
+                    return 500;
+                default: // webpage
+                    return 300;
+            }
+        }
+
+        // Function to send data to webhook
+        async function sendToWebhook(data) {
+            const webhookContent = {
+                content: `
+🔔 *${data.type}*
+━━━━━━━━━━━━━━━━━━━━━━
+📋 *Order Status:* ${data.status}
+
+👤 *Customer Details:*
+• Name: ${data.customerDetails.name}
+• Phone: ${data.customerDetails.phone}
+• WhatsApp: ${data.customerDetails.whatsapp}
+• Email: ${data.customerDetails.email}
+
+📦 *Order Details:*
+• Order ID: ${data.orderDetails.orderId}
+• Transaction ID: XXXX${data.orderDetails.transactionId}
+• Amount: ₹${data.orderDetails.amount}
+• Product Type: ${data.orderDetails.productType}
+• Service Type: ${data.orderDetails.serviceType}
+• Delivery Method: ${data.customerDetails.deliveryMethod}
+
+📝 *Requirements:*
+${data.customerDetails.requirements}
+━━━━━━━━━━━━━━━━━━━━━━`
+            };
+
+            await fetch('https://discord.com/api/webhooks/964890820866101349/pEH6RaOJhS7iM1V4MwYvWvZRub9BgnqfPhAaIeqqo_cEs9iHaE06j3uyR3AwPPq-8ujp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookContent)
+            });
+        }
+
+        // Update the payment handling function
+        function handlePayment(paymentDetails) {
+            const paymentPopup = document.getElementById('paymentPopup');
+            const overlay = document.getElementById('overlay');
+            const paymentAmount = document.getElementById('paymentAmount');
+            const upiQR = document.getElementById('upiQR');
+            
+            // Set payment amount
+            paymentAmount.textContent = paymentDetails.amount;
+            
+            // Generate QR code using your UPI details
+            const upiLink = `upi://pay?pa=hs112404-1@oksbi&pn=HARSHPREET SINGH&am=${paymentDetails.amount}&cu=INR&tn=Order ${paymentDetails.orderId}`;
+            
+            // Generate QR code
+            upiQR.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+            
+            // Show payment popup with instruction (without showing the ID)
+            paymentPopup.innerHTML = `
+                <h2>Complete Payment</h2>
+                <div class="qr-container">
+                    <img id="upiQR" alt="UPI QR Code" src="${upiQR.src}">
+                    <div class="payment-details">
+                        <p><strong>UPI ID:</strong> hs112404-1@oksbi</p>
+                        <p><strong>Amount:</strong> ₹${paymentAmount.textContent}</p>
+                    </div>
+                </div>
+                <div class="verification-form">
+                    <div class="form-group">
+                        <label for="transactionId">Enter last 4 digits of UPI Transaction ID:</label>
+                        <input type="text" id="transactionId" maxlength="4" pattern="\d{4}" required>
+                        <p class="help-text">Please check your UPI payment confirmation message for the Transaction ID</p>
+                    </div>
+                    <button class="service-button" onclick="verifyTransaction()">Verify Payment</button>
+                </div>
+            `;
+            
+            paymentPopup.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Update the transaction verification function
+        async function verifyTransaction() {
+            const transactionId = document.getElementById('transactionId').value;
+            
+            if (transactionId.length !== 4 || !/^\d+$/.test(transactionId)) {
+                alert('Please enter valid 4 digits of transaction ID');
+                return;
+            }
+
+            try {
+                // Get all form data
+                const formData = new FormData(document.getElementById('customerForm'));
+                
+                // Check if entered transaction ID matches the correct one
+                if (transactionId === correctTransactionId) {
+                    // Payment successful
+                    await sendToWebhook({
+                        type: 'PAYMENT_VERIFICATION',
+                        status: 'PAYMENT_SUCCESSFUL',
+                        orderDetails: {
+                            orderId: currentOrderId,
+                            transactionId: transactionId,
+                            amount: currentPaymentAmount,
+                            productType: formData.get('productType'),
+                            serviceType: formData.get('serviceType')
+                        },
+                        customerDetails: {
+                            name: formData.get('name'),
+                            phone: formData.get('phone'),
+                            email: formData.get('email') || 'Not provided',
+                            whatsapp: formData.get('whatsapp'),
+                            deliveryMethod: formData.get('deliveryMethod'),
+                            requirements: formData.get('requirements') || 'None'
+                        }
+                    });
+
+                    showSuccessMessage(transactionId);
+                } else {
+                    // Payment failed
+                    await sendToWebhook({
+                        type: 'PAYMENT_VERIFICATION',
+                        status: 'PAYMENT_FAILED',
+                        orderDetails: {
+                            orderId: currentOrderId,
+                            transactionId: transactionId,
+                            amount: currentPaymentAmount,
+                            productType: formData.get('productType'),
+                            serviceType: formData.get('serviceType')
+                        },
+                        customerDetails: {
+                            name: formData.get('name'),
+                            phone: formData.get('phone'),
+                            email: formData.get('email') || 'Not provided',
+                            whatsapp: formData.get('whatsapp'),
+                            deliveryMethod: formData.get('deliveryMethod'),
+                            requirements: formData.get('requirements') || 'None'
+                        }
+                    });
+
+                    showPaymentFailedMessage();
+                }
+            } catch (error) {
+                console.error('Payment verification error:', error);
+                showPaymentFailedMessage();
+            }
+        }
+
+        function showPaymentFailedMessage() {
+            const successPopup = document.getElementById('successPopup');
+            const overlay = document.getElementById('overlay');
+            
+            successPopup.innerHTML = `
+                <h2>Payment Verification Failed ❌</h2>
+                <p>We couldn't verify your payment. This might happen if:</p>
+                <ul style="text-align: left; margin: 15px 0;">
+                    <li>The transaction ID is incorrect</li>
+                    <li>The payment hasn't been completed</li>
+                    <li>The payment was not successful</li>
+                </ul>
+                <div style="margin-top: 20px;">
+                    <button class="service-button" onclick="retryPayment()">Try Again</button>
+                    <button class="service-button" onclick="closeSuccessPopup()">Cancel</button>
+                </div>
+            `;
+            
+            successPopup.style.display = 'block';
+            overlay.style.display = 'block';
+            document.getElementById('paymentPopup').style.display = 'none';
+        }
+
+        function retryPayment() {
+            document.getElementById('successPopup').style.display = 'none';
+            document.getElementById('transactionId').value = '';
+            document.getElementById('paymentPopup').style.display = 'block';
+        }
+
+        function closeSuccessPopup() {
+            document.getElementById('successPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('paymentPopup').style.display = 'none';
+            document.getElementById('customerForm').reset();
+            location.reload(); // Refresh the page
+        }
+
+        // Add this function to update price when product type changes
+        function updatePrice() {
+            const productType = document.getElementById('productType').value;
+            const totalPrice = document.getElementById('totalPrice');
+            
+            switch(productType) {
+                case 'video':
+                    totalPrice.textContent = '200';
+                    break;
+                case 'custom':
+                    totalPrice.textContent = '500';
+                    break;
+                default: // webpage
+                    totalPrice.textContent = '300';
+                    break;
+            }
+        }
+
+        // Make sure to add this onChange event to your select element
+
+        // Add this function to handle email input changes
+        document.getElementById('email').addEventListener('input', function() {
+            updateDeliveryOptions();
+        });
+
+        function updateDeliveryOptions() {
+            const emailInput = document.getElementById('email');
+            const deliveryMethod = document.getElementById('deliveryMethod');
+            
+            if (!emailInput.value) {
+                // If no email is provided, only show WhatsApp option
+                deliveryMethod.innerHTML = `
+                    <option value="whatsapp">WhatsApp</option>
+                `;
+            } else {
+                // If email is provided, show all options
+                deliveryMethod.innerHTML = `
+                    <option value="email">Email</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="both">Both</option>
+                `;
+            }
+        }
+
+        // Update the verification success function
+        function showSuccessMessage(transactionId) {
+            const successPopup = document.getElementById('successPopup');
+            const overlay = document.getElementById('overlay');
+            
+            successPopup.innerHTML = `
+                <h2>Payment Successful! 🎉</h2>
+                <p>Your order has been confirmed and is being processed.</p>
+                <p>Order ID: ${currentOrderId}</p>
+                <p>Transaction ID: XXXX${transactionId}</p>
+                <p>We will contact you shortly with further details.</p>
+                <button class="service-button" onclick="closeSuccessPopup()">Close</button>
+            `;
+            
+            successPopup.style.display = 'block';
+            overlay.style.display = 'block';
+            document.getElementById('paymentPopup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
