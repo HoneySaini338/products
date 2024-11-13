@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Services Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #00ff9d;
+            --background-color: #000000;
+            --card-background: #121212;
+            --text-color: #ffffff;
+            --shadow-color: rgba(0, 255, 157, 0.1);
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-size: clamp(24px, 5vw, 36px);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 15px;
+        }
+
+        .service-card {
+            background: var(--card-background);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+
+        .service-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        .service-button {
+            background: var(--primary-color);
+            color: var(--background-color);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .service-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .order-form {
+            display: none;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: var(--background-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px var(--shadow-color);
+            z-index: 1000;
+            border: 1px solid var(--primary-color);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .service-card {
+                padding: 20px;
+            }
+
+            .order-form {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            input, select {
+                padding: 10px;
+            }
+        }
+
+        .success-popup ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 10px 0;
+            color: var(--text-color);
+        }
+
+        .success-popup ul li {
+            margin: 5px 0;
+        }
+
+        .success-popup button {
+            margin: 5px;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        #transactionId {
+            text-align: center;
+            letter-spacing: 4px;
+            font-size: 1.2em;
+        }
+
+        textarea.form-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--background-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea.form-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* Add this CSS to center the confirm order button */
+        .service-button[type="submit"] {
+            display: block;
+            margin: 20px auto;
+            min-width: 200px;
+        }
+
+        .price-summary {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--card-background);
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .price-summary p {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        #totalPrice {
+            font-size: 1.4em;
+            margin-left: 5px;
+        }
+
+        .sample-link {
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .sample-options-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--primary-color);
+            z-index: 1001;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .sample-viewer {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--primary-color);
+            z-index: 1002;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .sample-viewer img, .sample-viewer video {
+            max-width: 100%;
+            max-height: 70vh;
+            margin-bottom: 15px;
+        }
+
+        .sample-button {
+            background: var(--card-background);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+        .sample-button:hover {
+            background: var(--primary-color);
+            color: var(--background-color);
+        }
+    </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h1>Digital Services Portfolio</h1>
+    
+    <div class="services-grid">
+        <div class="service-card">
+            <h2>Wedding Invitation</h2>
+            <p>Custom wedding invitation webpages and videos</p>
+            <p>Webpage: ₹250 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Wedding Invitation')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Birthday Wishes</h2>
+            <p>Personalized birthday wish webpages and videos</p>
+            <p>Webpage: ₹250 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Birthday Wishes')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Festival Wishes</h2>
+            <p>Festival celebration webpages and videos</p>
+            <p>Webpage: ₹250 | Video: ₹200</p>
+            <button class="service-button" onclick="showOrderForm('Festival Wishes')">Order Now</button>
+        </div>
+
+        <div class="service-card">
+            <h2>Custom Webpage</h2>
+            <p>Fully customized webpage based on your requirements</p>
+            <p>Webpage: ₹300</p>
+            <button class="service-button" onclick="showOrderForm('Custom Webpage')">Order Now</button>
+        </div>
+    </div>
+
+    <div class="sample-options-popup" id="sampleOptionsPopup">
+        <h2>View Samples</h2>
+        <button class="sample-button" onclick="showSample('webpage')">View Webpage</button>
+        <button class="sample-button" onclick="showSample('video')">View Video</button>
+        <button class="service-button" onclick="closeSampleOptions()">Close</button>
+    </div>
+
+    <div class="sample-viewer" id="sampleViewer">
+        <div id="sampleContent"></div>
+        <button class="service-button" onclick="closeSampleViewer()">Close</button>
+    </div>
+
+    <div id="orderForm" class="order-form">
+        <h2>Order Details</h2>
+        <form id="customerForm">
+            <input type="hidden" id="serviceType" name="serviceType">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email: (Optional)</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp Number:</label>
+                <input type="tel" id="whatsapp" name="whatsapp" required>
+            </div>
+            <div class="form-group">
+                <label for="productType">Product Type:</label>
+                <select id="productType" name="productType" required onchange="updatePrice()">
+                    <option value="webpage">Webpage (₹300)</option>
+                    <option value="video">Video (₹200)</option>
+                    <option value="custom">Custom Webpage (₹300)</option>
+                </select>
+            </div>
+            <div class="form-group" id="customRequirementsGroup" style="display: none;">
+                <label for="customDetails">Describe What You Want:</label>
+                <textarea id="customDetails" name="customDetails" rows="4" 
+                    placeholder="Please describe your requirements in detail..." 
+                    class="form-input"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="deliveryMethod">Delivery Method:</label>
+                <select id="deliveryMethod" name="deliveryMethod" required>
+                    <option value="whatsapp">WhatsApp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="requirements">Special Requirements:</label>
+                <input type="text" id="requirements" name="requirements">
+            </div>
+            <div class="price-summary">
+                <p>Total Amount: ₹<span id="totalPrice">250</span></p>
+            </div>
+            <button type="submit" class="service-button">Confirm Order</button>
+        </form>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="success-popup" id="successPopup">
+        <h2>Order Successful! 🎉</h2>
+        <p>Your order has been confirmed and is being processed.</p>
+        <p>You will receive further details via email and WhatsApp.</p>
+        <p>Order ID: ${currentOrderId}</p>
+        <button class="service-button" onclick="closeSuccessPopup()">Close</button>
+    </div>
+
+    <script>
+        function showOrderForm(serviceType) {
+            const orderForm = document.getElementById('orderForm');
+            const productTypeSelect = document.getElementById('productType');
+            document.getElementById('serviceType').value = serviceType;
+            
+            // Update product type options based on service
+            if (serviceType === 'Custom Webpage') {
+                productTypeSelect.innerHTML = `
+                    <option value="custom">Webpage (₹300)</option>
+                `;
+                document.getElementById('customRequirementsGroup').style.display = 'block';
+            } else {
+                productTypeSelect.innerHTML = `
+                    <option value="webpage">Webpage (₹250)</option>
+                    <option value="video">Video (₹200)</option>
+                `;
+                document.getElementById('customRequirementsGroup').style.display = 'none';
+            }
+            
+            orderForm.style.display = 'block';
+            orderForm.scrollIntoView({ behavior: 'smooth' });
+            updatePrice();
+        }
+
+        let currentOrderId = null;
+        let currentPaymentAmount = null;
+        let correctTransactionId = null;
+
+        document.getElementById('customerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const productType = formData.get('productType');
+            currentPaymentAmount = getAmountFromProductType(productType);
+            currentOrderId = 'ORD' + Date.now();
+            
+            // Initialize Razorpay payment
+            const options = {
+                key: "rzp_live_NldrmTmBbS1Aid",
+                amount: currentPaymentAmount * 100, // Convert to paise
+                currency: "INR",
+                name: "Digital Services Portfolio",
+                description: formData.get('serviceType'),
+                prefill: {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    contact: formData.get('phone')
+                },
+                handler: async function (response) {
+                    // On successful payment
+                    await sendToWebhook({
+                        type: 'PAYMENT_VERIFICATION',
+                        status: 'PAYMENT_SUCCESSFUL',
+                        orderDetails: {
+                            orderId: currentOrderId,
+                            transactionId: response.razorpay_payment_id,
+                            amount: currentPaymentAmount,
+                            productType: formData.get('productType'),
+                            serviceType: formData.get('serviceType')
+                        },
+                        customerDetails: {
+                            name: formData.get('name'),
+                            phone: formData.get('phone'),
+                            email: formData.get('email') || 'Not provided',
+                            whatsapp: formData.get('whatsapp'),
+                            deliveryMethod: formData.get('deliveryMethod'),
+                            requirements: formData.get('requirements') || 'None'
+                        }
+                    });
+
+                    // Show success message
+                    const successPopup = document.getElementById('successPopup');
+                    const overlay = document.getElementById('overlay');
+                    
+                    successPopup.innerHTML = `
+                        <h2>Payment Successful! 🎉</h2>
+                        <p>Your order has been confirmed and is being processed.</p>
+                        <p>Order ID: ${currentOrderId}</p>
+                        <p>Payment ID: ${response.razorpay_payment_id}</p>
+                        <p>We will contact you shortly with further details.</p>
+                        <button class="service-button" onclick="closeSuccessPopup()">Close</button>
+                    `;
+                    
+                    successPopup.style.display = 'block';
+                    overlay.style.display = 'block';
+                },
+                theme: {
+                    color: "#00ff9d"
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', async function (response) {
+                // On payment failure
+                await sendToWebhook({
+                    type: 'PAYMENT_VERIFICATION',
+                    status: 'PAYMENT_FAILED',
+                    orderDetails: {
+                        orderId: currentOrderId,
+                        error: response.error,
+                        amount: currentPaymentAmount,
+                        productType: formData.get('productType'),
+                        serviceType: formData.get('serviceType')
+                    },
+                    customerDetails: {
+                        name: formData.get('name'),
+                        phone: formData.get('phone'),
+                        email: formData.get('email') || 'Not provided',
+                        whatsapp: formData.get('whatsapp'),
+                        deliveryMethod: formData.get('deliveryMethod'),
+                        requirements: formData.get('requirements') || 'None'
+                    }
+                });
+
+                // Show failure message
+                const successPopup = document.getElementById('successPopup');
+                const overlay = document.getElementById('overlay');
+                
+                successPopup.innerHTML = `
+                    <h2>Payment Failed ❌</h2>
+                    <p>Your payment was not successful.</p>
+                    <p>Error: ${response.error.description}</p>
+                    <button class="service-button" onclick="closeSuccessPopup()">Close</button>
+                `;
+                
+                successPopup.style.display = 'block';
+                overlay.style.display = 'block';
+            });
+
+            rzp.open();
+        });
+
+        // Add this helper function to get amount based on product type
+        function getAmountFromProductType(productType) {
+            switch(productType) {
+                case 'video':
+                    return 200;
+                case 'custom':
+                    return 300;
+                case 'webpage':
+                    return 250;
+                default:
+                    return 250;
+            }
+        }
+
+        // Function to send data to webhook
+        async function sendToWebhook(data) {
+            const customDetails = document.getElementById('customDetails')?.value || 'Not a custom order';
+            
+            const webhookContent = {
+                content: `
+���� *${data.type}*
+━━━━━━━━━━━━━━━━━━━━━━
+📋 *Order Status:* ${data.status}
+
+👤 *Customer Details:*
+• Name: ${data.customerDetails.name}
+• Phone: ${data.customerDetails.phone}
+• WhatsApp: ${data.customerDetails.whatsapp}
+• Email: ${data.customerDetails.email}
+
+📦 *Order Details:*
+• Order ID: ${data.orderDetails.orderId}
+ Transaction ID: ${data.orderDetails.transactionId}
+• Amount: ₹${data.orderDetails.amount}
+• Product Type: ${data.orderDetails.productType}
+• Service Type: ${data.orderDetails.serviceType}
+• Delivery Method: ${data.customerDetails.deliveryMethod}
+
+📝 *Requirements:*
+${data.customerDetails.requirements}
+
+🎨 *Custom Webpage Details:*
+${customDetails}
+━━━━━━━━━━━━━━━━━━━━━━`
+            };
+
+            await fetch('https://discord.com/api/webhooks/964890820866101349/pEH6RaOJhS7iM1V4MwYvWvZRub9BgnqfPhAaIeqqo_cEs9iHaE06j3uyR3AwPPq-8ujp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookContent)
+            });
+        }
+
+        function closeSuccessPopup() {
+            document.getElementById('successPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('customerForm').reset();
+            location.reload(); // Refresh the page
+        }
+
+        // Add this function to update price when product type changes
+        function updatePrice() {
+            const productType = document.getElementById('productType').value;
+            const totalPrice = document.getElementById('totalPrice');
+            
+            switch(productType) {
+                case 'video':
+                    totalPrice.textContent = '200';
+                    break;
+                case 'custom':
+                    totalPrice.textContent = '300';
+                    break;
+                case 'webpage':
+                    totalPrice.textContent = '250';
+                    break;
+            }
+        }
+
+        // Make sure to add this onChange event to your select element
+
+        // Add this function to handle email input changes
+        document.getElementById('email').addEventListener('input', function() {
+            updateDeliveryOptions();
+        });
+
+        function updateDeliveryOptions() {
+            const emailInput = document.getElementById('email');
+            const deliveryMethod = document.getElementById('deliveryMethod');
+            
+            if (!emailInput.value) {
+                // If no email is provided, only show WhatsApp option
+                deliveryMethod.innerHTML = `
+                    <option value="whatsapp">WhatsApp</option>
+                `;
+            } else {
+                // If email is provided, show all options
+                deliveryMethod.innerHTML = `
+                    <option value="email">Email</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="both">Both</option>
+                `;
+            }
+        }
+
+        // Add this JavaScript at the end of your existing scripts
+        function addSampleLinks() {
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach(card => {
+                const link = document.createElement('a');
+                link.className = 'sample-link';
+                link.textContent = 'View Samples';
+                link.onclick = () => showSampleOptions(card.querySelector('h2').textContent);
+                card.insertBefore(link, card.querySelector('.service-button'));
+            });
+        }
+
+        function showSampleOptions(serviceType) {
+            currentService = serviceType;
+            document.getElementById('sampleOptionsPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closeSampleOptions() {
+            document.getElementById('sampleOptionsPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function showSample(type) {
+            const viewer = document.getElementById('sampleViewer');
+            const content = document.getElementById('sampleContent');
+            
+            // Sample content based on service and type
+            const samples = {
+                'Wedding Invitation': {
+                    webpage: 'URL_TO_WEDDING_WEBPAGE_IMAGE',
+                    video: 'URL_TO_WEDDING_VIDEO'
+                },
+                'Birthday Wishes': {
+                    webpage: 'URL_TO_BIRTHDAY_WEBPAGE_IMAGE',
+                    video: 'URL_TO_BIRTHDAY_VIDEO'
+                },
+                'Festival Wishes': {
+                    webpage: 'URL_TO_FESTIVAL_WEBPAGE_IMAGE',
+                    video: 'URL_TO_FESTIVAL_VIDEO'
+                },
+                'Custom Webpage': {
+                    webpage: 'URL_TO_CUSTOM_WEBPAGE_IMAGE',
+                    video: 'URL_TO_CUSTOM_VIDEO'
+                }
+            };
+
+            const sampleUrl = samples[currentService][type];
+            
+            if (type === 'webpage') {
+                content.innerHTML = `<img src="${sampleUrl}" alt="${currentService} webpage sample">`;
+            } else {
+                content.innerHTML = `<video controls><source src="${sampleUrl}" type="video/mp4"></video>`;
+            }
+            
+            document.getElementById('sampleOptionsPopup').style.display = 'none';
+            viewer.style.display = 'block';
+        }
+
+        function closeSampleViewer() {
+            document.getElementById('sampleViewer').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Add this to your existing window.onload or add it separately
+        window.addEventListener('load', addSampleLinks);
+
+        let currentService = '';
+    </script>
+</body>
+</html>
